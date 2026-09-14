@@ -5,15 +5,16 @@ export interface CartItem {
   id: string
   name: string
   price: number
-  quantity: number
+  quantity?: number
   image?: string
   notes?: string
   extras?: { name: string; price: number }[]
+  [key: string]: any
 }
 
 interface CartStore {
   items: CartItem[]
-  addItem: (item: CartItem) => void
+  addItem: (item: any) => void
   removeItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
@@ -27,13 +28,14 @@ export const useCartStore = create<CartStore>()(
       items: [],
       addItem: (item) =>
         set((state) => {
-          const existingIndex = state.items.findIndex((i) => i.id === item.id)
+          const itemToAdd = { ...item, quantity: item.quantity || 1 }
+          const existingIndex = state.items.findIndex((i) => i.id === itemToAdd.id)
           if (existingIndex > -1) {
             const newItems = [...state.items]
-            newItems[existingIndex].quantity += item.quantity
+            newItems[existingIndex].quantity = (newItems[existingIndex].quantity || 1) + (itemToAdd.quantity || 1)
             return { items: newItems }
           }
-          return { items: [...state.items, item] }
+          return { items: [...state.items, itemToAdd] }
         }),
       removeItem: (id) =>
         set((state) => ({
@@ -50,15 +52,15 @@ export const useCartStore = create<CartStore>()(
         }),
       clearCart: () => set({ items: [] }),
       totalItems: () => {
-        return get().items.reduce((sum, item) => sum + item.quantity, 0)
+        return get().items.reduce((sum, item) => sum + (item.quantity || 1), 0)
       },
       totalPrice: () => {
         return get().items.reduce((sum, item) => {
-          const extrasTotal = item.extras?.reduce((exSum, ex) => exSum + ex.price, 0) || 0
-          return sum + (item.price + extrasTotal) * item.quantity
+          const extrasTotal = item.extras?.reduce((exSum: number, ex: any) => exSum + (ex.price || 0), 0) || 0
+          return sum + (item.price + extrasTotal) * (item.quantity || 1)
         }, 0)
       },
     }),
-    { name: 'pepinillo-cart' }
+    { name: 'carta-digital' }
   )
 )
