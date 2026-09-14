@@ -17,11 +17,13 @@ interface CartStore {
   removeItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
+  totalItems: () => number
+  totalPrice: () => number
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       items: [],
       addItem: (item) =>
         set((state) => {
@@ -47,6 +49,15 @@ export const useCartStore = create<CartStore>()(
           }
         }),
       clearCart: () => set({ items: [] }),
+      totalItems: () => {
+        return get().items.reduce((sum, item) => sum + item.quantity, 0)
+      },
+      totalPrice: () => {
+        return get().items.reduce((sum, item) => {
+          const extrasTotal = item.extras?.reduce((exSum, ex) => exSum + ex.price, 0) || 0
+          return sum + (item.price + extrasTotal) * item.quantity
+        }, 0)
+      },
     }),
     { name: 'pepinillo-cart' }
   )
