@@ -69,7 +69,7 @@ export default function MenuPage() {
             {/* Lista de productos en el carrito */}
             <div className="flex-1 overflow-y-auto py-4 space-y-4">
               {items.length === 0 ? (
-                <p className="text-center text-gray-500 mt-10">Tu carrito está vacío 🥒</p>
+                <p className="text-center text-gray-500 mt-10">Tu carrito está vacío </p>
               ) : (
                 items.map((item) => (
                   <div key={item.id} className="flex justify-between items-center border-b pb-3">
