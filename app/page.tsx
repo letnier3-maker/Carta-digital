@@ -18,7 +18,7 @@ export default function MenuPage() {
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Barra superior */}
       <header className="bg-white shadow-sm sticky top-0 z-10 px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800">🥒 Pepinillo - Menú Digital</h1>
+        <h1 className="text-xl font-bold text-gray-800"> - Menú Digital</h1>
         <button 
           onClick={() => setIsCartOpen(true)}
           className="relative bg-black text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-gray-800 transition"
