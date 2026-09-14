@@ -1,69 +1,70 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useCartStore } from '@/store/useCartStore'
+import { ShoppingBag, Plus } from 'lucide-react'
+
+const mockProducts = [
+  { id: '1', name: 'Hamburguesa Artesanal', price: 12.99, description: 'Carne 100% res, queso cheddar y tocino crujiente.' },
+  { id: '2', name: 'Papas Sazonadas', price: 4.50, description: 'Papas fritas crocantes con especias de la casa.' },
+  { id: '3', name: 'Limonada Natural', price: 3.00, description: 'Bebida refrescante recién hecha.' },
+]
+
+export default function MenuPage() {
+  const { addItem, totalItems, totalPrice } = useCartStore()
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gray-50 pb-24">
+      {/* Encabezado con bolsa de compras */}
+      <header className="bg-white border-b p-4 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-md mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold">Menú Digital</h1>
+          <div className="relative">
+            <ShoppingBag className="w-6 h-6 text-gray-700" />
+            {totalItems() > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {totalItems()}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* Lista de productos */}
+      <main className="max-w-md mx-auto p-4 space-y-4">
+        <h2 className="text-lg font-semibold text-gray-800">Platos Destacados</h2>
+        <div className="space-y-3">
+          {mockProducts.map((product) => (
+            <div key={product.id} className="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
+              <div className="pr-4">
+                <h3 className="font-semibold text-gray-900">{product.name}</h3>
+                <p className="text-sm text-gray-500">{product.description}</p>
+                <p className="font-bold text-gray-900 mt-1">${product.price.toFixed(2)}</p>
+              </div>
+              <button
+                onClick={() => addItem(product)}
+                className="bg-black text-white p-2.5 rounded-lg hover:bg-gray-800 transition-colors shrink-0"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+          ))}
         </div>
       </main>
+
+      {/* Barra flotante inferior del carrito */}
+      {totalItems() > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg">
+          <div className="max-w-md mx-auto flex justify-between items-center">
+            <div>
+              <p className="text-xs text-gray-500">Total acumulado</p>
+              <p className="text-lg font-bold">${totalPrice().toFixed(2)}</p>
+            </div>
+            <button className="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors">
+              Ver Pedido ({totalItems()})
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }
