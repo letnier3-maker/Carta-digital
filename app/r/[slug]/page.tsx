@@ -41,7 +41,7 @@ export default async function RestaurantMenuPage({ params }: PageProps) {
           </p>
         ) : (
           <div className="grid gap-4">
-            {restaurant.products.map((product) => (
+            {restaurant.products.map((product: any) => (
               <div key={product.id} className="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
                 <div>
                   <h3 className="font-semibold text-lg text-gray-800">{product.name}</h3>
